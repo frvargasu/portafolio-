@@ -1,4 +1,4 @@
-#Sistema de Inventario y Ventas PYME
+ # Sistema de Inventario y Ventas PYME
 
 Sistema web completo para gestión de inventario y punto de venta, diseñado para pequeñas y medianas empresas chilenas.
 
