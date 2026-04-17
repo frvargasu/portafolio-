@@ -1,4 +1,4 @@
-# 📦 Sistema de Inventario y Ventas PYME
+#Sistema de Inventario y Ventas PYME
 
 Sistema web completo para gestión de inventario y punto de venta, diseñado para pequeñas y medianas empresas chilenas.
 
@@ -9,7 +9,7 @@ Sistema web completo para gestión de inventario y punto de venta, diseñado par
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 ### Dashboard
 Panel principal con resumen de ventas, gráficos de inversión vs ingresos, productos más vendidos y accesos rápidos.
@@ -46,7 +46,7 @@ Sistema seguro de login y registro con validación de formularios.
 
 ---
 
-## 🚀 Características
+## Características
 
 ### Gestión de Inventario
 - ✅ Catálogo de productos con imágenes y códigos de barras
@@ -74,7 +74,7 @@ Sistema seguro de login y registro con validación de formularios.
 
 ---
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 | Backend | Frontend |
 |---------|----------|
@@ -85,7 +85,7 @@ Sistema seguro de login y registro con validación de formularios.
 
 ---
 
-## 📋 Requisitos
+## Requisitos
 
 - Node.js 18+
 - MySQL 8.0+
@@ -93,7 +93,7 @@ Sistema seguro de login y registro con validación de formularios.
 
 ---
 
-## ⚙️ Instalación
+## Instalación
 
 ### 1. Clonar repositorio
 
@@ -129,7 +129,7 @@ npm start
 
 ---
 
-## 👤 Usuario por Defecto
+##  Usuario por Defecto
 
 | Email | Contraseña | Rol |
 |-------|------------|-----|
@@ -137,7 +137,7 @@ npm start
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 ├── backend/
@@ -166,7 +166,7 @@ npm start
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Autenticación
 | Método | Endpoint | Descripción |
@@ -209,7 +209,7 @@ npm start
 
 ---
 
-## 🗄️ Base de Datos
+##  Base de Datos
 
 ### Diagrama de Tablas
 
@@ -233,7 +233,7 @@ categorias ────┼──> productos ──> detalle_ventas ──> venta
 
 ---
 
-## 🎯 Contexto del Proyecto
+##  Contexto del Proyecto
 
 ### Visión y Pilares
 ![Visión y Pilares](doc/screenshots/Vision%20y%20pilares.png)
@@ -263,16 +263,12 @@ Sistema web que automatiza:
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 MIT License
 
 ---
 
-## 👨‍💻 Autor
+## Autor
 
-**Francisco Vargas** - [GitHub](https://github.com/frvargasu)
-
----
-
-⭐ Si este proyecto te fue útil, considera darle una estrella en GitHub.
+**Francisco Vargas** - [GitHub](https://github.com/
