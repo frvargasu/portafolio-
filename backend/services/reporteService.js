@@ -134,6 +134,72 @@ class ReporteService {
   }
 
   /**
+   * Obtiene ventas agrupadas por método de pago
+   * @param {string} fechaInicio - Fecha de inicio
+   * @param {string} fechaFin - Fecha de fin
+   * @returns {Promise<Array>} Ventas por método de pago
+   */
+  async getVentasPorMetodoPago(fechaInicio = null, fechaFin = null) {
+    const hoy = new Date().toISOString().split('T')[0];
+    const hace30Dias = new Date();
+    hace30Dias.setDate(hace30Dias.getDate() - 30);
+    
+    const inicio = fechaInicio || hace30Dias.toISOString().split('T')[0];
+    const fin = fechaFin || hoy;
+
+    const db = require('../database');
+    const sql = `
+      SELECT 
+        metodo_pago,
+        COUNT(*) as cantidad,
+        COALESCE(SUM(total), 0) as total
+      FROM ventas
+      WHERE estado = 'completada'
+        AND DATE(fecha) >= DATE(?)
+        AND DATE(fecha) <= DATE(?)
+      GROUP BY metodo_pago
+      ORDER BY total DESC
+    `;
+
+    return await db.query(sql, [inicio, fin]);
+  }
+
+  /**
+   * Obtiene ventas agrupadas por categoría
+   * @param {string} fechaInicio - Fecha de inicio
+   * @param {string} fechaFin - Fecha de fin
+   * @returns {Promise<Array>} Ventas por categoría
+   */
+  async getVentasPorCategoria(fechaInicio = null, fechaFin = null) {
+    const hoy = new Date().toISOString().split('T')[0];
+    const hace30Dias = new Date();
+    hace30Dias.setDate(hace30Dias.getDate() - 30);
+    
+    const inicio = fechaInicio || hace30Dias.toISOString().split('T')[0];
+    const fin = fechaFin || hoy;
+
+    const db = require('../database');
+    const sql = `
+      SELECT 
+        COALESCE(c.nombre, 'Sin categoría') as categoria,
+        SUM(dv.cantidad) as cantidad,
+        COALESCE(SUM(dv.subtotal), 0) as total
+      FROM detalle_ventas dv
+      INNER JOIN productos p ON dv.producto_id = p.id
+      LEFT JOIN categorias c ON p.categoria_id = c.id
+      INNER JOIN ventas v ON dv.venta_id = v.id
+      WHERE v.estado = 'completada'
+        AND DATE(v.fecha) >= DATE(?)
+        AND DATE(v.fecha) <= DATE(?)
+      GROUP BY c.id, c.nombre
+      ORDER BY total DESC
+      LIMIT 6
+    `;
+
+    return await db.query(sql, [inicio, fin]);
+  }
+
+  /**
    * Genera un dashboard con métricas principales
    * @returns {Promise<Object>} Dashboard con métricas
    */

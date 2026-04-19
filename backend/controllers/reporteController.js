@@ -84,10 +84,42 @@ const getMovimientosStock = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * GET /api/reportes/ventas-metodo-pago
+ * Obtiene ventas agrupadas por método de pago
+ */
+const getVentasPorMetodoPago = asyncHandler(async (req, res) => {
+  const { fecha_inicio, fecha_fin } = req.query;
+  
+  const data = await reporteService.getVentasPorMetodoPago(fecha_inicio, fecha_fin);
+  
+  res.json({
+    success: true,
+    data
+  });
+});
+
+/**
+ * GET /api/reportes/ventas-categoria
+ * Obtiene ventas agrupadas por categoría
+ */
+const getVentasPorCategoria = asyncHandler(async (req, res) => {
+  const { fecha_inicio, fecha_fin } = req.query;
+  
+  const data = await reporteService.getVentasPorCategoria(fecha_inicio, fecha_fin);
+  
+  res.json({
+    success: true,
+    data
+  });
+});
+
 module.exports = {
   getDashboard,
   getVentasPorDia,
   getProductosMasVendidos,
   getProductosBajoStock,
-  getMovimientosStock
+  getMovimientosStock,
+  getVentasPorMetodoPago,
+  getVentasPorCategoria
 };

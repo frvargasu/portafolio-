@@ -4,6 +4,18 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Dashboard, ApiResponse, ProductoMasVendido, VentaPorDia, Producto, MovimientoStock } from '../models';
 
+export interface VentaMetodoPago {
+  metodo_pago: string;
+  cantidad: number;
+  total: number;
+}
+
+export interface VentaCategoria {
+  categoria: string;
+  cantidad: number;
+  total: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -45,5 +57,21 @@ export class ReporteService {
     if (fechaFin) params = params.set('fecha_fin', fechaFin);
 
     return this.http.get<ApiResponse<MovimientoStock[]>>(`${this.API_URL}/movimientos-stock`, { params });
+  }
+
+  getVentasPorMetodoPago(fechaInicio?: string, fechaFin?: string): Observable<ApiResponse<VentaMetodoPago[]>> {
+    let params = new HttpParams();
+    if (fechaInicio) params = params.set('fecha_inicio', fechaInicio);
+    if (fechaFin) params = params.set('fecha_fin', fechaFin);
+
+    return this.http.get<ApiResponse<VentaMetodoPago[]>>(`${this.API_URL}/ventas-metodo-pago`, { params });
+  }
+
+  getVentasPorCategoria(fechaInicio?: string, fechaFin?: string): Observable<ApiResponse<VentaCategoria[]>> {
+    let params = new HttpParams();
+    if (fechaInicio) params = params.set('fecha_inicio', fechaInicio);
+    if (fechaFin) params = params.set('fecha_fin', fechaFin);
+
+    return this.http.get<ApiResponse<VentaCategoria[]>>(`${this.API_URL}/ventas-categoria`, { params });
   }
 }

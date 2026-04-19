@@ -45,4 +45,18 @@ router.get('/bajo-stock', reporteController.getProductosBajoStock);
  */
 router.get('/movimientos-stock', reporteController.getMovimientosStock);
 
+/**
+ * @route   GET /api/reportes/ventas-metodo-pago
+ * @desc    Obtener ventas agrupadas por método de pago
+ * @access  Private
+ */
+router.get('/ventas-metodo-pago', reporteController.getVentasPorMetodoPago);
+
+/**
+ * @route   GET /api/reportes/ventas-categoria
+ * @desc    Obtener ventas agrupadas por categoría
+ * @access  Private
+ */
+router.get('/ventas-categoria', reporteController.getVentasPorCategoria);
+
 module.exports = router;
