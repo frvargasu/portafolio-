@@ -5,9 +5,11 @@
 const auth = require('./auth');
 const errorHandler = require('./errorHandler');
 const validator = require('./validator');
+const rateLimiter = require('./rateLimiter');
 
 module.exports = {
   ...auth,
   ...errorHandler,
-  ...validator
+  ...validator,
+  ...rateLimiter
 };

@@ -3,35 +3,25 @@
  * Endpoints: /api/auth
  */
 const express = require('express');
-const rateLimit = require('express-rate-limit');
 const router = express.Router();
 const { authController } = require('../controllers');
-const { authenticate, userValidation } = require('../middleware');
-
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: {
-    success: false,
-    message: 'Demasiados intentos de inicio de sesión. Intente nuevamente en 15 minutos.'
-  }
-});
+const { authenticate, userValidation, authLimiter, createAccountLimiter } = require('../middleware');
 
 /**
  * @route   POST /api/auth/register
  * @desc    Registrar un nuevo usuario
  * @access  Public
+ * @rateLimit 3 requests per hour per IP
  */
-router.post('/register', userValidation.register, authController.register);
+router.post('/register', createAccountLimiter, userValidation.register, authController.register);
 
 /**
  * @route   POST /api/auth/login
  * @desc    Iniciar sesión
  * @access  Public
+ * @rateLimit 5 requests per 15 minutes per IP
  */
-router.post('/login', loginLimiter, userValidation.login, authController.login);
+router.post('/login', authLimiter, userValidation.login, authController.login);
 
 /**
  * @route   GET /api/auth/profile

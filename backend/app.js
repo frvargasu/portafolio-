@@ -19,7 +19,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const config = require('./config');
 const routes = require('./routes');
-const { notFoundHandler, errorHandler } = require('./middleware');
+const { notFoundHandler, errorHandler, generalLimiter } = require('./middleware');
 const db = require('./database');
 
 // Crear aplicación Express
@@ -39,6 +39,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+
+// Rate limiting general para todas las rutas API
+app.use('/api', generalLimiter);
 
 // Parsear JSON en el body de las peticiones
 app.use(express.json());

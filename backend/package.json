@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node app.js",
     "dev": "node --watch app.js",
-    "init-db": "node database/init.js"
+    "init-db": "node database/init.js",
+    "test": "jest --coverage --detectOpenHandles --forceExit",
+    "test:watch": "jest --watch"
   },
   "keywords": [
     "inventory",
@@ -29,5 +31,9 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
     "mysql2": "^3.6.5"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
   }
 }
