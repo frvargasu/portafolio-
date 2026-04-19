@@ -34,9 +34,10 @@ app.use(helmet());
 
 // En producción debe definirse CORS_ORIGIN con el dominio real del frontend
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
+  origin: true, // Permitir cualquier origen en desarrollo
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 // Parsear JSON en el body de las peticiones
