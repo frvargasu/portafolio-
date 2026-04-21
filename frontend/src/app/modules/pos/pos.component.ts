@@ -774,7 +774,7 @@ export class PosComponent implements OnInit {
   );
 
   subtotal = computed(() => 
-    this.carrito().reduce((acc, item) => acc + item.subtotal, 0)
+    this.carrito().reduce((acc, item) => acc + Number(item.subtotal), 0)
   );
 
   total = computed(() => Math.max(0, this.subtotal() - this.descuento));
@@ -858,7 +858,7 @@ export class PosComponent implements OnInit {
       this.carrito.set(
         carritoActual.map(item =>
           item.id === producto.id
-            ? { ...item, cantidad: item.cantidad + 1, subtotal: (item.cantidad + 1) * item.precio_venta }
+            ? { ...item, cantidad: item.cantidad + 1, subtotal: (item.cantidad + 1) * Number(item.precio_venta) }
             : item
         )
       );
@@ -866,7 +866,7 @@ export class PosComponent implements OnInit {
       const nuevoItem: ProductoCarrito = {
         ...producto,
         cantidad: 1,
-        subtotal: producto.precio_venta
+        subtotal: Number(producto.precio_venta)
       };
       this.carrito.set([...carritoActual, nuevoItem]);
     }
@@ -878,7 +878,7 @@ export class PosComponent implements OnInit {
     this.carrito.set(
       this.carrito().map(i =>
         i.id === item.id
-          ? { ...i, cantidad: i.cantidad + 1, subtotal: (i.cantidad + 1) * i.precio_venta }
+          ? { ...i, cantidad: i.cantidad + 1, subtotal: (i.cantidad + 1) * Number(i.precio_venta) }
           : i
       )
     );
@@ -893,7 +893,7 @@ export class PosComponent implements OnInit {
     this.carrito.set(
       this.carrito().map(i =>
         i.id === item.id
-          ? { ...i, cantidad: i.cantidad - 1, subtotal: (i.cantidad - 1) * i.precio_venta }
+          ? { ...i, cantidad: i.cantidad - 1, subtotal: (i.cantidad - 1) * Number(i.precio_venta) }
           : i
       )
     );
