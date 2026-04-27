@@ -10,6 +10,7 @@ const authRoutes = require('./authRoutes');
 const usuarioRoutes = require('./usuarioRoutes');
 const categoriaRoutes = require('./categoriaRoutes');
 const productoRoutes = require('./productoRoutes');
+const proveedorRoutes = require('./proveedorRoutes');
 const ventaRoutes = require('./ventaRoutes');
 const reporteRoutes = require('./reporteRoutes');
 
@@ -18,6 +19,7 @@ router.use('/auth', authRoutes);
 router.use('/usuarios', usuarioRoutes);
 router.use('/categorias', categoriaRoutes);
 router.use('/productos', productoRoutes);
+router.use('/proveedores', proveedorRoutes);
 router.use('/ventas', ventaRoutes);
 router.use('/reportes', reporteRoutes);
 
@@ -32,6 +34,7 @@ router.get('/', (req, res) => {
       usuarios: '/api/usuarios',
       categorias: '/api/categorias',
       productos: '/api/productos',
+      proveedores: '/api/proveedores',
       ventas: '/api/ventas',
       reportes: '/api/reportes'
     }

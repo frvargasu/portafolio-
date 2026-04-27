@@ -219,6 +219,72 @@ const saleValidation = {
 };
 
 /**
+ * Reglas de validación para proveedores
+ */
+const proveedorValidation = {
+  create: [
+    body('nombre')
+      .trim()
+      .notEmpty().withMessage('El nombre es obligatorio')
+      .isLength({ min: 2, max: 150 }).withMessage('El nombre debe tener entre 2 y 150 caracteres'),
+    body('contacto')
+      .optional()
+      .trim()
+      .isLength({ max: 100 }).withMessage('El contacto no puede exceder 100 caracteres'),
+    body('email')
+      .optional()
+      .trim()
+      .isEmail().withMessage('Formato de email inválido')
+      .normalizeEmail(),
+    body('telefono')
+      .optional()
+      .trim()
+      .isLength({ max: 30 }).withMessage('El teléfono no puede exceder 30 caracteres'),
+    body('direccion')
+      .optional()
+      .trim()
+      .isLength({ max: 255 }).withMessage('La dirección no puede exceder 255 caracteres'),
+    body('notas')
+      .optional()
+      .trim()
+      .isLength({ max: 1000 }).withMessage('Las notas no pueden exceder 1000 caracteres'),
+    validate
+  ],
+  update: [
+    param('id').isInt().withMessage('ID inválido'),
+    body('nombre')
+      .optional()
+      .trim()
+      .isLength({ min: 2, max: 150 }).withMessage('El nombre debe tener entre 2 y 150 caracteres'),
+    body('contacto')
+      .optional()
+      .trim()
+      .isLength({ max: 100 }).withMessage('El contacto no puede exceder 100 caracteres'),
+    body('email')
+      .optional()
+      .trim()
+      .isEmail().withMessage('Formato de email inválido')
+      .normalizeEmail(),
+    body('telefono')
+      .optional()
+      .trim()
+      .isLength({ max: 30 }).withMessage('El teléfono no puede exceder 30 caracteres'),
+    body('direccion')
+      .optional()
+      .trim()
+      .isLength({ max: 255 }).withMessage('La dirección no puede exceder 255 caracteres'),
+    body('notas')
+      .optional()
+      .trim()
+      .isLength({ max: 1000 }).withMessage('Las notas no pueden exceder 1000 caracteres'),
+    body('activo')
+      .optional()
+      .isBoolean().withMessage('El campo activo debe ser booleano'),
+    validate
+  ]
+};
+
+/**
  * Validación de parámetros comunes
  */
 const commonValidation = {
@@ -243,5 +309,6 @@ module.exports = {
   categoryValidation,
   productValidation,
   saleValidation,
+  proveedorValidation,
   commonValidation
 };

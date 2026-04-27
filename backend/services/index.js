@@ -7,6 +7,7 @@ module.exports = {
   usuarioService: require('./usuarioService'),
   categoriaService: require('./categoriaService'),
   productoService: require('./productoService'),
+  proveedorService: require('./proveedorService'),
   ventaService: require('./ventaService'),
   reporteService: require('./reporteService')
 };

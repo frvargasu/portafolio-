@@ -296,6 +296,7 @@ export class LayoutComponent {
     { icon: 'dashboard', label: 'Dashboard', route: '/dashboard' },
     { icon: 'inventory', label: 'Productos', route: '/productos' },
     { icon: 'category', label: 'Categorías', route: '/categorias' },
+    { icon: 'local_shipping', label: 'Proveedores', route: '/proveedores' },
     { icon: 'attach_money', label: 'Ventas', route: '/ventas' },
     { icon: 'point_of_sale', label: 'Nueva Venta', route: '/pos' }
   ];

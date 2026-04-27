@@ -37,6 +37,24 @@ CREATE TABLE IF NOT EXISTS categorias (
 ) ENGINE=InnoDB;
 
 -- =====================================================
+-- TABLA: proveedores
+-- Proveedores de productos
+-- =====================================================
+CREATE TABLE IF NOT EXISTS proveedores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(150) NOT NULL UNIQUE,
+    contacto VARCHAR(100),
+    email VARCHAR(150),
+    telefono VARCHAR(30),
+    direccion VARCHAR(255),
+    notas TEXT,
+    activo BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_proveedores_nombre (nombre)
+) ENGINE=InnoDB;
+
+-- =====================================================
 -- TABLA: productos
 -- Catálogo de productos del inventario
 -- =====================================================

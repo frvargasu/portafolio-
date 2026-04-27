@@ -7,6 +7,7 @@ module.exports = {
   usuarioController: require('./usuarioController'),
   categoriaController: require('./categoriaController'),
   productoController: require('./productoController'),
+  proveedorController: require('./proveedorController'),
   ventaController: require('./ventaController'),
   reporteController: require('./reporteController')
 };

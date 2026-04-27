@@ -128,6 +128,19 @@ export interface VentaPorDia {
   cantidad_ventas: number;
 }
 
+export interface Proveedor {
+  id: number;
+  nombre: string;
+  contacto?: string;
+  email?: string;
+  telefono?: string;
+  direccion?: string;
+  notas?: string;
+  activo: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   message?: string;
