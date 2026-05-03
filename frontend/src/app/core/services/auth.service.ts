@@ -86,6 +86,14 @@ export class AuthService {
     });
   }
 
+  forgotPassword(email: string): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(`${this.API_URL}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, password: string): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(`${this.API_URL}/reset-password/${token}`, { password });
+  }
+
   private setSession(authData: AuthResponse): void {
     localStorage.setItem(this.TOKEN_KEY, authData.token);
     localStorage.setItem(this.USER_KEY, JSON.stringify(authData.user));

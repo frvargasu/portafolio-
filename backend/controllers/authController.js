@@ -81,10 +81,32 @@ const changePassword = asyncHandler(async (req, res) => {
   });
 });
 
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  await authService.forgotPassword(email);
+  // Respuesta genérica para no revelar si el email existe
+  res.json({
+    success: true,
+    message: 'Si el correo está registrado, recibirás un enlace de recuperación en breve'
+  });
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+  await authService.resetPassword(token, password);
+  res.json({
+    success: true,
+    message: 'Contraseña restablecida exitosamente. Ya puedes iniciar sesión'
+  });
+});
+
 module.exports = {
   register,
   login,
   getProfile,
   updateProfile,
-  changePassword
+  changePassword,
+  forgotPassword,
+  resetPassword
 };

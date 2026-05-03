@@ -44,9 +44,20 @@ const userValidation = {
     body('password')
       .notEmpty().withMessage('La contraseña es obligatoria')
       .isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
-    body('rol')
-      .optional()
-      .isIn(['admin', 'vendedor']).withMessage('Rol inválido. Use: admin o vendedor'),
+    validate
+  ],
+  forgotPassword: [
+    body('email')
+      .trim()
+      .notEmpty().withMessage('El email es obligatorio')
+      .isEmail().withMessage('Formato de email inválido')
+      .normalizeEmail(),
+    validate
+  ],
+  resetPassword: [
+    body('password')
+      .notEmpty().withMessage('La contraseña es obligatoria')
+      .isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
     validate
   ],
   login: [

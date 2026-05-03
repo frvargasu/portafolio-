@@ -9,6 +9,7 @@ const express = require('express');
 jest.mock('../database', () => ({
   query: jest.fn(),
   queryOne: jest.fn(),
+  run: jest.fn(),
   transaction: jest.fn()
 }));
 
@@ -31,11 +32,11 @@ const createTestApp = () => {
   app.use(express.json());
   
   const productoController = require('../controllers/productoController');
-  const { authenticate, isAdmin, productoValidation } = require('../middleware');
-  
+  const { authenticate, isAdmin, productValidation } = require('../middleware');
+
   app.get('/api/productos', authenticate, productoController.getAll);
   app.get('/api/productos/:id', authenticate, productoController.getById);
-  app.post('/api/productos', authenticate, isAdmin, productoValidation.create, productoController.create);
+  app.post('/api/productos', authenticate, isAdmin, productValidation.create, productoController.create);
   
   // Error handler
   app.use((err, req, res, next) => {
@@ -184,19 +185,17 @@ describe('Productos Endpoints', () => {
 
     it('debería crear un producto válido', async () => {
       db.queryOne.mockImplementation((sql) => {
-        if (sql.includes('usuarios')) {
+        if (sql.includes('FROM usuarios WHERE')) {
           return Promise.resolve({ id: 1, rol: 'admin', activo: true });
         }
-        if (sql.includes('categorias')) {
+        if (sql.includes('FROM categorias')) {
           return Promise.resolve({ id: 1, nombre: 'Categoría' });
         }
-        if (sql.includes('productos') && sql.includes('codigo_barras')) {
-          return Promise.resolve(null); // No existe código duplicado
-        }
-        return Promise.resolve({ id: 1, ...nuevoProducto });
+        // findById tras crear: LEFT JOIN categorias
+        return Promise.resolve({ id: 1, ...nuevoProducto, categoria_nombre: 'Categoría' });
       });
-      
-      db.query.mockResolvedValueOnce({ insertId: 1 });
+
+      db.run.mockResolvedValueOnce({ lastInsertRowid: 1 });
 
       const res = await request(app)
         .post('/api/productos')

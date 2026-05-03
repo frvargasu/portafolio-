@@ -1,0 +1,15 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/v1/:path*",
+      "destination": "https://REEMPLAZA_CON_TU_URL_DE_RAILWAY/api/v1/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "buildCommand": "npm run build -- --configuration=production",
+  "outputDirectory": "dist/inventario-pyme/browser",
+  "framework": "angular"
+}

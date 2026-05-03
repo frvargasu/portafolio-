@@ -17,6 +17,8 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 const config = require('./config');
 const routes = require('./routes');
 const { notFoundHandler, errorHandler, generalLimiter } = require('./middleware');
@@ -41,7 +43,7 @@ app.use(cors({
 }));
 
 // Rate limiting general para todas las rutas API
-app.use('/api', generalLimiter);
+app.use('/api/v1', generalLimiter);
 
 // Parsear JSON en el body de las peticiones
 app.use(express.json());
@@ -56,6 +58,9 @@ app.use(morgan(config.server.env === 'production' ? 'combined' : 'dev'));
 // RUTAS
 // =====================================================
 
+// Documentación interactiva de la API
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Ruta de health check
 app.get('/health', (req, res) => {
   res.json({
@@ -67,7 +72,7 @@ app.get('/health', (req, res) => {
 });
 
 // Rutas de la API
-app.use('/api', routes);
+app.use('/api/v1', routes);
 
 // =====================================================
 // MANEJO DE ERRORES

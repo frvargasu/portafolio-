@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
     password VARCHAR(255) NOT NULL,
     rol ENUM('admin', 'vendedor') NOT NULL DEFAULT 'vendedor',
     activo BOOLEAN DEFAULT TRUE,
+    reset_token VARCHAR(255) NULL,
+    reset_token_expires DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_usuarios_email (email)

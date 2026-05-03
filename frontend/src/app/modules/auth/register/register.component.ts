@@ -8,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -23,8 +22,7 @@ import { AuthService } from '../../../core/services/auth.service';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
-    MatSelectModule
+    MatProgressSpinnerModule
   ],
   template: `
     <div class="auth-container">
@@ -119,6 +117,10 @@ import { AuthService } from '../../../core/services/auth.service';
             ¿Ya tienes cuenta? 
             <a routerLink="/auth/login">Inicia sesión</a>
           </p>
+          <p class="hint-text">
+            <mat-icon class="hint-icon">info</mat-icon>
+            La primera cuenta creada será administrador. Las siguientes serán vendedores.
+          </p>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -198,6 +200,25 @@ import { AuthService } from '../../../core/services/auth.service';
         &:hover {
           text-decoration: underline;
         }
+      }
+    }
+
+    .hint-text {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      color: #64748b;
+      font-size: 12px;
+      margin-top: 8px;
+      text-align: left;
+      line-height: 1.4;
+
+      .hint-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+        margin-top: 1px;
       }
     }
   `]

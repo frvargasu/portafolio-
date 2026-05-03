@@ -30,13 +30,13 @@ router.get('/', (req, res) => {
     message: 'API de Inventario y Ventas PYME',
     version: '1.0.0',
     endpoints: {
-      auth: '/api/auth',
-      usuarios: '/api/usuarios',
-      categorias: '/api/categorias',
-      productos: '/api/productos',
-      proveedores: '/api/proveedores',
-      ventas: '/api/ventas',
-      reportes: '/api/reportes'
+      auth: '/api/v1/auth',
+      usuarios: '/api/v1/usuarios',
+      categorias: '/api/v1/categorias',
+      productos: '/api/v1/productos',
+      proveedores: '/api/v1/proveedores',
+      ventas: '/api/v1/ventas',
+      reportes: '/api/v1/reportes'
     }
   });
 });

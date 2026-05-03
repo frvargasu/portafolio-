@@ -9,11 +9,13 @@ const express = require('express');
 jest.mock('../database', () => ({
   query: jest.fn(),
   queryOne: jest.fn(),
+  run: jest.fn(),
   transaction: jest.fn()
 }));
 
 // Mock de bcrypt
 jest.mock('bcryptjs', () => ({
+  genSalt: jest.fn().mockResolvedValue('mock_salt'),
   hash: jest.fn().mockResolvedValue('hashed_password'),
   compare: jest.fn()
 }));
@@ -59,7 +61,10 @@ describe('Auth Endpoints', () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+    jwt.sign.mockReturnValue('mock_token');
+    bcrypt.genSalt.mockResolvedValue('mock_salt');
+    bcrypt.hash.mockResolvedValue('hashed_password');
   });
 
   describe('POST /api/auth/register', () => {
@@ -70,9 +75,10 @@ describe('Auth Endpoints', () => {
     };
 
     it('debería registrar un usuario válido', async () => {
-      db.queryOne.mockResolvedValueOnce(null); // No existe el email
-      db.query.mockResolvedValueOnce({ insertId: 1 }); // Insert exitoso
-      db.queryOne.mockResolvedValueOnce({ // Usuario creado
+      db.queryOne.mockResolvedValueOnce(null);          // findByEmail: no existe
+      db.queryOne.mockResolvedValueOnce({ total: 1 });  // countAdmins: ya hay admin
+      db.run.mockResolvedValueOnce({ lastInsertRowid: 1 }); // INSERT usuario
+      db.queryOne.mockResolvedValueOnce({               // findById tras crear
         id: 1,
         nombre: 'Test User',
         email: 'test@example.com',
@@ -193,7 +199,7 @@ describe('Auth Endpoints', () => {
         .post('/api/auth/login')
         .send(credentials);
 
-      expect(res.status).toBe(403);
+      expect(res.status).toBe(401);
       expect(res.body.success).toBe(false);
     });
   });

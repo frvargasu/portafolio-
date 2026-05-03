@@ -217,6 +217,28 @@ Pipeline de GitHub Actions que ejecuta tests del backend, compila el frontend, v
 
 ---
 
+## Documentación de la API
+
+La documentación interactiva (Swagger UI) está disponible en:
+
+```
+http://localhost:3000/api-docs
+```
+
+Permite explorar y probar todos los endpoints directamente desde el navegador.
+
+---
+
+## Limitaciones conocidas
+
+### Autenticación sin refresh token
+
+El token JWT tiene una expiración fija (configurable con `JWT_EXPIRES_IN`, por defecto 24h). Cuando expira, el usuario debe iniciar sesión nuevamente. No existe renovación automática del token.
+
+En una versión de producción se implementaría un mecanismo de **refresh token con rotación**: el access token duraría 15 minutos y el refresh token (almacenado en una cookie HttpOnly) se usaría para emitir nuevos access tokens sin requerir credenciales.
+
+---
+
 ## Autor
 
 **Francisco Vargas**

@@ -88,6 +88,9 @@ import { AuthService } from '../../../core/services/auth.service';
             ¿No tienes cuenta? 
             <a routerLink="/auth/register">Regístrate aquí</a>
           </p>
+          <p class="forgot-link">
+            <a routerLink="/auth/forgot-password">¿Olvidaste tu contraseña?</a>
+          </p>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -165,6 +168,21 @@ import { AuthService } from '../../../core/services/auth.service';
         font-weight: 500;
 
         &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .forgot-link {
+      margin-top: 4px;
+
+      a {
+        color: #64748b;
+        font-size: 13px;
+        text-decoration: none;
+
+        &:hover {
+          color: #3f51b5;
           text-decoration: underline;
         }
       }

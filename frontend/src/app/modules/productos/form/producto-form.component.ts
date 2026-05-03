@@ -121,11 +121,6 @@ import { Producto, Categoria } from '../../../core/models';
                   }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>URL de Imagen</mat-label>
-                  <input matInput formControlName="imagen_url" placeholder="https://...">
-                  <mat-icon matSuffix>image</mat-icon>
-                </mat-form-field>
               </div>
 
               <!-- Preview de margen -->
@@ -246,8 +241,7 @@ export class ProductoFormComponent implements OnInit {
       precio_compra: [0, [Validators.required, Validators.min(0)]],
       precio_venta: [0, [Validators.required, Validators.min(1)]],
       stock: [0, [Validators.required, Validators.min(0)]],
-      stock_minimo: [5, [Validators.min(0)]],
-      imagen_url: ['']
+      stock_minimo: [5, [Validators.min(0)]]
     });
   }
 

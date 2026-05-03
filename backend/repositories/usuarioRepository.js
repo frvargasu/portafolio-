@@ -129,6 +129,28 @@ class UsuarioRepository {
     const sql = 'DELETE FROM usuarios WHERE id = ?';
     await db.run(sql, [id]);
   }
+
+  async countAdmins() {
+    const result = await db.queryOne(
+      "SELECT COUNT(*) as total FROM usuarios WHERE rol = 'admin' AND activo = 1"
+    );
+    return result.total;
+  }
+
+  async findByResetToken(token) {
+    const sql = 'SELECT * FROM usuarios WHERE reset_token = ? AND reset_token_expires > NOW()';
+    return await db.queryOne(sql, [token]);
+  }
+
+  async saveResetToken(id, token, expires) {
+    const sql = 'UPDATE usuarios SET reset_token = ?, reset_token_expires = ? WHERE id = ?';
+    await db.run(sql, [token, expires, id]);
+  }
+
+  async clearResetToken(id) {
+    const sql = 'UPDATE usuarios SET reset_token = NULL, reset_token_expires = NULL WHERE id = ?';
+    await db.run(sql, [id]);
+  }
 }
 
 module.exports = new UsuarioRepository();

@@ -31,11 +31,11 @@ const createTestApp = () => {
   app.use(express.json());
   
   const ventaController = require('../controllers/ventaController');
-  const { authenticate, ventaValidation } = require('../middleware');
-  
+  const { authenticate, saleValidation } = require('../middleware');
+
   app.get('/api/ventas', authenticate, ventaController.getAll);
   app.get('/api/ventas/:id', authenticate, ventaController.getById);
-  app.post('/api/ventas', authenticate, ventaValidation.create, ventaController.create);
+  app.post('/api/ventas', authenticate, saleValidation.create, ventaController.create);
   
   // Error handler
   app.use((err, req, res, next) => {
@@ -131,15 +131,15 @@ describe('Ventas Endpoints', () => {
       };
       
       db.queryOne.mockImplementation((sql, params) => {
-        if (sql.includes('usuarios')) {
+        if (sql.includes('FROM usuarios WHERE')) {
           return Promise.resolve({ id: 1, rol: 'vendedor', activo: true });
         }
-        if (sql.includes('ventas v') && params[0] === 1) {
+        if (sql.includes('FROM ventas v')) {
           return Promise.resolve(mockVenta);
         }
         return Promise.resolve(null);
       });
-      
+
       db.query.mockResolvedValueOnce(mockVenta.detalles);
 
       const res = await request(app)
@@ -153,7 +153,7 @@ describe('Ventas Endpoints', () => {
 
     it('debería retornar 404 para venta inexistente', async () => {
       db.queryOne.mockImplementation((sql) => {
-        if (sql.includes('usuarios')) {
+        if (sql.includes('FROM usuarios WHERE')) {
           return Promise.resolve({ id: 1, rol: 'vendedor', activo: true });
         }
         return Promise.resolve(null);
