@@ -101,6 +101,19 @@ const resetPassword = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * POST /api/auth/logout
+ * Invalida el token actual insertándolo en la blacklist
+ */
+const logout = asyncHandler(async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  await authService.logout(token, req.user.id);
+  res.json({
+    success: true,
+    message: 'Sesión cerrada exitosamente'
+  });
+});
+
 module.exports = {
   register,
   login,
@@ -108,5 +121,6 @@ module.exports = {
   updateProfile,
   changePassword,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  logout
 };

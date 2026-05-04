@@ -3,9 +3,12 @@
  * Lógica de negocio para gestión de usuarios
  */
 const bcrypt = require('bcryptjs');
-const { usuarioRepository } = require('../repositories');
+const { usuarioRepository, tokenBlacklistRepository } = require('../repositories');
 const { Usuario } = require('../models');
 const { AppError } = require('../middleware/errorHandler');
+
+// Duración máxima de un JWT: coincide con config.jwt.expiresIn (24 h por defecto)
+const JWT_MAX_MS = 24 * 60 * 60 * 1000;
 
 class UsuarioService {
   /**
@@ -85,7 +88,28 @@ class UsuarioService {
       }
     }
 
+    // No permitir desactivar o degradar al último administrador activo
+    if (usuario.rol === 'admin' && usuario.activo) {
+      const isBeingDeactivated = userData.activo === false || userData.activo === 0;
+      const isBeingDemoted = userData.rol && userData.rol !== 'admin';
+      if (isBeingDeactivated || isBeingDemoted) {
+        const adminCount = await usuarioRepository.countAdmins();
+        if (adminCount <= 1) {
+          throw new AppError('No se puede modificar al único administrador activo', 403);
+        }
+      }
+    }
+
     const updated = await usuarioRepository.update(id, userData);
+
+    // Si el usuario fue desactivado, invalida sus tokens activos
+    const isBeingDeactivatedNow =
+      (userData.activo === false || userData.activo === 0) && usuario.activo;
+    if (isBeingDeactivatedNow) {
+      const expiresAt = new Date(Date.now() + JWT_MAX_MS);
+      await tokenBlacklistRepository.add('BLOCKED', id, expiresAt);
+    }
+
     return Usuario.sanitize(updated);
   }
 
@@ -99,12 +123,19 @@ class UsuarioService {
       throw new AppError('Usuario no encontrado', 404);
     }
 
-    // No permitir eliminar al usuario con id 1 (admin principal)
-    if (id === 1) {
-      throw new AppError('No se puede eliminar al administrador principal', 403);
+    // No permitir desactivar al último administrador activo
+    if (usuario.rol === 'admin' && usuario.activo) {
+      const adminCount = await usuarioRepository.countAdmins();
+      if (adminCount <= 1) {
+        throw new AppError('No se puede desactivar al único administrador activo', 403);
+      }
     }
 
     await usuarioRepository.delete(id);
+
+    // Invalida todos los tokens activos del usuario desactivado
+    const expiresAt = new Date(Date.now() + JWT_MAX_MS);
+    await tokenBlacklistRepository.add('BLOCKED', id, expiresAt);
   }
 
   /**

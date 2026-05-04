@@ -18,9 +18,9 @@ services:
       - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      interval: 5s
+      timeout: 3s
+      retries: 10
     networks:
       - inventario_network
 
@@ -39,7 +39,7 @@ services:
       DB_NAME: ${DB_NAME:-inventario_pyme}
       DB_USER: ${DB_USER:-inventario_user}
       DB_PASSWORD: ${DB_PASSWORD:-inventario_pass}
-      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET es obligatorio. Definelo en el archivo .env}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
     ports:
       - "3000:3000"

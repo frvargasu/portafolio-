@@ -23,6 +23,7 @@ const config = require('./config');
 const routes = require('./routes');
 const { notFoundHandler, errorHandler, generalLimiter } = require('./middleware');
 const db = require('./database');
+const { tokenBlacklistRepository } = require('./repositories');
 
 // Crear aplicación Express
 const app = express();
@@ -36,7 +37,7 @@ app.use(helmet());
 
 // En producción debe definirse CORS_ORIGIN con el dominio real del frontend
 app.use(cors({
-  origin: true, // Permitir cualquier origen en desarrollo
+  origin: process.env.CORS_ORIGIN || true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -105,6 +106,21 @@ async function startServer() {
       console.log(`🔧 Ambiente: ${config.server.env}`);
       console.log('=====================================================\n');
     });
+
+    // Limpieza de tokens expirados: inmediata al arrancar, luego cada 6 horas
+    const limpiarBlacklist = async () => {
+      try {
+        const removed = await tokenBlacklistRepository.cleanExpired();
+        if (removed > 0) {
+          console.log(`Token blacklist: ${removed} registro(s) expirado(s) eliminado(s)`);
+        }
+      } catch (err) {
+        console.error('Error limpiando token_blacklist:', err.message);
+      }
+    };
+
+    limpiarBlacklist();
+    setInterval(limpiarBlacklist, 6 * 60 * 60 * 1000);
   } catch (error) {
     console.error('❌ Error al iniciar el servidor:', error.message);
     console.log('\n💡 Ejecuta "npm run init-db" para inicializar la base de datos');

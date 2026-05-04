@@ -53,6 +53,12 @@ export class AuthService {
   }
 
   logout(): void {
+    const token = this.getToken();
+    if (token) {
+      this.http.post<void>(`${this.API_URL}/logout`, {}).subscribe({
+        error: () => {}
+      });
+    }
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
     this.currentUserSignal.set(null);

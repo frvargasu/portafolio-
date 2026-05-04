@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 const { authController } = require('../controllers');
-const { authenticate, userValidation, authLimiter, createAccountLimiter } = require('../middleware');
+const { authenticate, userValidation, authLimiter, createAccountLimiter, checkRegistroHabilitado } = require('../middleware');
 
 /**
  * @swagger
@@ -42,7 +42,7 @@ const { authenticate, userValidation, authLimiter, createAccountLimiter } = requ
  *                 example: secreto123
  *     responses:
  *       201:
- *         description: Usuario registrado exitosamente. La primera cuenta creada recibe rol admin.
+ *         description: Crea el primer administrador del sistema. Solo funciona si no existe ningún administrador activo.
  *         content:
  *           application/json:
  *             schema:
@@ -59,10 +59,15 @@ const { authenticate, userValidation, authLimiter, createAccountLimiter } = requ
  *         content:
  *           application/json:
  *             schema: { $ref: '#/components/schemas/Error' }
+ *       403:
+ *         description: Registro cerrado. Ya existe un administrador activo.
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
  *       429:
  *         description: Demasiados intentos (límite 3 registros/hora por IP)
  */
-router.post('/register', createAccountLimiter, userValidation.register, authController.register);
+router.post('/register', createAccountLimiter, checkRegistroHabilitado, userValidation.register, authController.register);
 
 /**
  * @swagger
@@ -249,5 +254,29 @@ router.post('/forgot-password', authLimiter, userValidation.forgotPassword, auth
  *         description: Token inválido o expirado
  */
 router.post('/reset-password/:token', userValidation.resetPassword, authController.resetPassword);
+
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Cerrar sesión e invalidar el token actual
+ *     description: Inserta el hash SHA-256 del token en la blacklist. Requiere token válido.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Sesión cerrada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: { type: boolean, example: true }
+ *                 message: { type: string, example: Sesión cerrada exitosamente }
+ *       401:
+ *         description: Token inválido o no proporcionado
+ */
+router.post('/logout', authenticate, authController.logout);
 
 module.exports = router;

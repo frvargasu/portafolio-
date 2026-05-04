@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const config = require('../config');
-const { usuarioRepository } = require('../repositories');
+const { usuarioRepository, tokenBlacklistRepository } = require('../repositories');
 const { Usuario } = require('../models');
 const { AppError } = require('../middleware/errorHandler');
 const { sendPasswordResetEmail } = require('./emailService');
@@ -24,9 +24,13 @@ class AuthService {
       throw new AppError('El email ya está registrado', 409);
     }
 
-    // El primer usuario activo es admin; los siguientes son vendedores
+    // Solo se permite registro público si aún no existe ningún administrador activo.
+    // Después del primer admin, los usuarios se crean desde el panel de administración.
     const adminCount = await usuarioRepository.countAdmins();
-    const rol = adminCount === 0 ? 'admin' : 'vendedor';
+    if (adminCount > 0) {
+      throw new AppError('El registro público está cerrado. Contacte al administrador para crear su cuenta', 403);
+    }
+    const rol = 'admin';
 
     // Hashear la contraseña
     const salt = await bcrypt.genSalt(10);
@@ -148,6 +152,20 @@ class AuthService {
     const resetUrl = `${frontendUrl}/auth/reset-password/${token}`;
 
     await sendPasswordResetEmail(user.email, resetUrl);
+  }
+
+  /**
+   * Invalida el token actual insertándolo en la blacklist.
+   * El repositorio almacena el hash SHA-256, no el JWT en crudo.
+   * @param {string} token  - JWT extraído del header Authorization
+   * @param {number} userId - ID del usuario autenticado
+   */
+  async logout(token, userId) {
+    const decoded = jwt.decode(token);
+    const expiresAt = decoded?.exp
+      ? new Date(decoded.exp * 1000)
+      : new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await tokenBlacklistRepository.add(token, userId, expiresAt);
   }
 
   async resetPassword(token, newPassword) {

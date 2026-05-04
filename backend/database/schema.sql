@@ -26,6 +26,23 @@ CREATE TABLE IF NOT EXISTS usuarios (
 ) ENGINE=InnoDB;
 
 -- =====================================================
+-- TABLA: token_blacklist
+-- Tokens JWT invalidados antes de su expiración natural
+-- (desactivación de usuario, logout forzado)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS token_blacklist (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    token VARCHAR(64) NOT NULL,
+    usuario_id INT NOT NULL,
+    fecha_expiracion DATETIME NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_token (token),
+    INDEX idx_tb_usuario_id (usuario_id),
+    INDEX idx_tb_expiracion (fecha_expiracion),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =====================================================
 -- TABLA: categorias
 -- Categorías de productos
 -- =====================================================
@@ -241,16 +258,21 @@ DELIMITER ;
 -- =====================================================
 -- DATOS INICIALES
 -- =====================================================
-
--- Usuario administrador por defecto (password: admin123)
--- La contraseña está hasheada con bcrypt
-INSERT IGNORE INTO usuarios (id, nombre, email, password, rol) 
-VALUES (1, 'Administrador', 'admin@sistema.com', '$2a$10$UKlkY473tLaQSr8CnL2ngezN6GG.n3bBlzJyUx.0sX0fzUkDhdH/a', 'admin');
+-- No se inserta usuario administrador por defecto.
+-- El primer usuario registrado recibirá rol de administrador.
 
 -- Categorías de ejemplo
-INSERT IGNORE INTO categorias (id, nombre, descripcion) VALUES 
+INSERT IGNORE INTO categorias (id, nombre, descripcion) VALUES
 (1, 'Electrónica', 'Productos electrónicos y tecnología'),
 (2, 'Alimentos', 'Productos alimenticios'),
 (3, 'Hogar', 'Artículos para el hogar'),
 (4, 'Ropa', 'Vestimenta y accesorios'),
 (5, 'Otros', 'Productos varios');
+
+-- =====================================================
+-- MIGRATION: token_blacklist TEXT → VARCHAR(64) + SHA-256
+-- Ejecutar sobre una BD existente (no aplica a instalaciones nuevas):
+-- =====================================================
+-- DELETE FROM token_blacklist;
+-- ALTER TABLE token_blacklist MODIFY COLUMN token VARCHAR(64) NOT NULL;
+-- ALTER TABLE token_blacklist ADD INDEX idx_token (token);

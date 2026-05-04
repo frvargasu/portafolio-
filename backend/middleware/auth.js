@@ -5,11 +5,13 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 const { Usuario } = require('../models');
+const { usuarioRepository, tokenBlacklistRepository } = require('../repositories');
 
 /**
- * Verifica que el usuario esté autenticado
+ * Verifica que el usuario esté autenticado y que su token no esté revocado.
+ * Combina verificación JWT + consulta a token_blacklist en un solo paso.
  */
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
   try {
     // Obtener el token del header Authorization
     const authHeader = req.headers.authorization;
@@ -34,6 +36,15 @@ const authenticate = (req, res, next) => {
 
     // Verificar y decodificar el token
     const decoded = jwt.verify(token, config.jwt.secret);
+
+    // Verificar que el token (o el usuario) no esté en la blacklist
+    const blacklisted = await tokenBlacklistRepository.isBlacklisted(token, decoded.id);
+    if (blacklisted) {
+      return res.status(401).json({
+        success: false,
+        message: 'Sesión invalidada. Por favor inicie sesión nuevamente'
+      });
+    }
 
     // Agregar información del usuario al request
     req.user = {
@@ -113,5 +124,49 @@ module.exports = {
   authenticate,
   isAdmin,
   hasRole,
-  optionalAuth
+  optionalAuth,
+
+  /**
+   * Rechaza requests cuyo token (o usuario) está en la blacklist.
+   * Debe colocarse DESPUÉS de `authenticate` en la cadena de middlewares.
+   */
+  checkTokenBlacklist: async (req, res, next) => {
+    try {
+      const token = req.headers.authorization.split(' ')[1];
+      const blacklisted = await tokenBlacklistRepository.isBlacklisted(token, req.user.id);
+      if (blacklisted) {
+        return res.status(401).json({
+          success: false,
+          message: 'Sesión invalidada. Por favor inicie sesión nuevamente'
+        });
+      }
+      next();
+    } catch {
+      next();
+    }
+  },
+
+  /**
+   * Bloquea el endpoint POST /register una vez que ya existe
+   * al menos un administrador activo en el sistema.
+   * Aplica sólo a ese endpoint; los usuarios posteriores los
+   * crea el administrador desde el panel.
+   */
+  checkRegistroHabilitado: async (req, res, next) => {
+    try {
+      const adminCount = await usuarioRepository.countAdmins();
+      if (adminCount > 0) {
+        return res.status(403).json({
+          success: false,
+          message: 'El registro público está deshabilitado'
+        });
+      }
+      next();
+    } catch {
+      return res.status(503).json({
+        success: false,
+        message: 'Servicio no disponible, intente más tarde'
+      });
+    }
+  }
 };

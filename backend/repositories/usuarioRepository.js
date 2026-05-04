@@ -121,15 +121,6 @@ class UsuarioRepository {
     await db.run(sql, [id]);
   }
 
-  /**
-   * Elimina un usuario permanentemente
-   * @param {number} id - ID del usuario
-   */
-  async hardDelete(id) {
-    const sql = 'DELETE FROM usuarios WHERE id = ?';
-    await db.run(sql, [id]);
-  }
-
   async countAdmins() {
     const result = await db.queryOne(
       "SELECT COUNT(*) as total FROM usuarios WHERE rol = 'admin' AND activo = 1"

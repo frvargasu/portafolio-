@@ -84,10 +84,30 @@ const remove = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * PUT /api/usuarios/cambiar-password
+ * Cambia la contraseña del usuario autenticado (cualquier rol)
+ */
+const changePassword = asyncHandler(async (req, res) => {
+  const { passwordActual, passwordNueva } = req.body;
+
+  await require('../services/authService').changePassword(
+    req.user.id,
+    passwordActual,
+    passwordNueva
+  );
+
+  res.json({
+    success: true,
+    message: 'Contraseña actualizada exitosamente'
+  });
+});
+
 module.exports = {
   getAll,
   getById,
   create,
   update,
-  remove
+  remove,
+  changePassword
 };
