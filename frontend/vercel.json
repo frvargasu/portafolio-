@@ -11,5 +11,5 @@
   ],
   "buildCommand": "npm run build -- --configuration=production",
   "outputDirectory": "dist/inventario-pyme/browser",
-  "framework": "angular"
+  "installCommand": "npm install --legacy-peer-deps"
 }
