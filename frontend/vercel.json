@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/v1/:path*",
-      "destination": "https://REEMPLAZA_CON_TU_URL_DE_RAILWAY/api/v1/:path*"
+      "destination": "https://portafolio-production-6311.up.railway.app/api/v1/:path*"
     },
     {
       "source": "/(.*)",
