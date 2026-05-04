@@ -6,9 +6,12 @@
 const express = require('express');
 const router = express.Router();
 const { usuarioController } = require('../controllers');
-const { authenticate, isAdmin, userValidation, commonValidation } = require('../middleware');
+const { authenticate, isAdmin, userValidation, commonValidation, changePasswordValidation } = require('../middleware');
 
-// Todas las rutas requieren autenticación y rol admin
+// Ruta de cambio de contraseña propia: autenticado, cualquier rol
+router.put('/cambiar-password', authenticate, changePasswordValidation, usuarioController.changePassword);
+
+// Todas las demás rutas requieren autenticación y rol admin
 router.use(authenticate, isAdmin);
 
 /**

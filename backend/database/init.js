@@ -121,9 +121,7 @@ async function initializeDatabase() {
     console.log('\n✅ Base de datos inicializada correctamente');
     console.log(`📍 Base de datos: ${config.database.database}`);
     console.log(`📍 Host: ${config.database.host}:${config.database.port}`);
-    console.log('\n👤 Usuario admin por defecto:');
-    console.log('   Email: admin@sistema.com');
-    console.log('   Password: admin123');
+    console.log('\n� Registra el primer usuario en la app para crear el administrador del sistema.');
     
   } catch (error) {
     console.error('❌ Error al inicializar la base de datos:', error.message);

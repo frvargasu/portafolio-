@@ -296,6 +296,18 @@ const proveedorValidation = {
 };
 
 /**
+ * Validación de cambio de contraseña propia
+ */
+const changePasswordValidation = [
+  body('passwordActual')
+    .notEmpty().withMessage('La contraseña actual es obligatoria'),
+  body('passwordNueva')
+    .notEmpty().withMessage('La nueva contraseña es obligatoria')
+    .isLength({ min: 6 }).withMessage('La nueva contraseña debe tener al menos 6 caracteres'),
+  validate
+];
+
+/**
  * Validación de parámetros comunes
  */
 const commonValidation = {
@@ -321,5 +333,6 @@ module.exports = {
   productValidation,
   saleValidation,
   proveedorValidation,
-  commonValidation
+  commonValidation,
+  changePasswordValidation
 };

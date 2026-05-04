@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 import { guestGuard } from './core/guards/guest.guard';
 
 export const routes: Routes = [
@@ -41,6 +42,11 @@ export const routes: Routes = [
       {
         path: 'pos',
         loadComponent: () => import('./modules/pos/pos.component').then(m => m.PosComponent)
+      },
+      {
+        path: 'usuarios',
+        canActivate: [adminGuard],
+        loadChildren: () => import('./modules/usuarios/usuarios.routes').then(m => m.USUARIOS_ROUTES)
       }
     ]
   },

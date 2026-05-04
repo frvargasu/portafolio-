@@ -82,7 +82,8 @@ describe('Productos Endpoints', () => {
       ];
       
       db.query.mockResolvedValueOnce(mockProductos);
-      db.queryOne.mockResolvedValueOnce({ total: 2 });
+      db.queryOne.mockResolvedValueOnce(null);         // blacklist check → no bloqueado
+      db.queryOne.mockResolvedValueOnce({ total: 2 }); // count
 
       const res = await request(app)
         .get('/api/productos')
@@ -97,7 +98,8 @@ describe('Productos Endpoints', () => {
 
     it('debería soportar paginación', async () => {
       db.query.mockResolvedValueOnce([{ id: 3, nombre: 'Producto 3' }]);
-      db.queryOne.mockResolvedValueOnce({ total: 25 });
+      db.queryOne.mockResolvedValueOnce(null);          // blacklist check → no bloqueado
+      db.queryOne.mockResolvedValueOnce({ total: 25 }); // count
 
       const res = await request(app)
         .get('/api/productos?page=2&limit=10')
@@ -110,7 +112,8 @@ describe('Productos Endpoints', () => {
 
     it('debería filtrar por categoría', async () => {
       db.query.mockResolvedValueOnce([{ id: 1, nombre: 'Producto', categoria_id: 5 }]);
-      db.queryOne.mockResolvedValueOnce({ total: 1 });
+      db.queryOne.mockResolvedValueOnce(null);         // blacklist check → no bloqueado
+      db.queryOne.mockResolvedValueOnce({ total: 1 }); // count
 
       const res = await request(app)
         .get('/api/productos?categoria_id=5')
@@ -185,6 +188,9 @@ describe('Productos Endpoints', () => {
 
     it('debería crear un producto válido', async () => {
       db.queryOne.mockImplementation((sql) => {
+        if (sql.includes('token_blacklist')) {
+          return Promise.resolve(null); // blacklist check → no bloqueado
+        }
         if (sql.includes('FROM usuarios WHERE')) {
           return Promise.resolve({ id: 1, rol: 'admin', activo: true });
         }

@@ -104,6 +104,9 @@ describe('Ventas Endpoints', () => {
     it('debería filtrar por rango de fechas', async () => {
       db.query.mockResolvedValueOnce([]);
       db.queryOne.mockImplementation((sql) => {
+        if (sql.includes('token_blacklist')) {
+          return Promise.resolve(null); // blacklist check → no bloqueado
+        }
         if (sql.includes('usuarios')) {
           return Promise.resolve({ id: 1, rol: 'vendedor', activo: true });
         }

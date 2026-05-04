@@ -119,7 +119,7 @@ import { AuthService } from '../../../core/services/auth.service';
           </p>
           <p class="hint-text">
             <mat-icon class="hint-icon">info</mat-icon>
-            La primera cuenta creada será administrador. Las siguientes serán vendedores.
+            Esta cuenta será el administrador del sistema. El registro público se cerrará tras esta primera cuenta.
           </p>
         </mat-card-actions>
       </mat-card>

@@ -22,7 +22,8 @@ const initDatabase = async () => {
       database: config.database.database,
       waitForConnections: true,
       connectionLimit: 10,
-      queueLimit: 0
+      queueLimit: 0,
+      ...(config.database.ssl && { ssl: { rejectUnauthorized: false } })
     });
 
     // Verificar conexión

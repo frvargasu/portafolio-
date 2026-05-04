@@ -8,5 +8,6 @@ module.exports = {
   productoRepository: require('./productoRepository'),
   proveedorRepository: require('./proveedorRepository'),
   ventaRepository: require('./ventaRepository'),
-  movimientoStockRepository: require('./movimientoStockRepository')
+  movimientoStockRepository: require('./movimientoStockRepository'),
+  tokenBlacklistRepository: require('./tokenBlacklistRepository')
 };

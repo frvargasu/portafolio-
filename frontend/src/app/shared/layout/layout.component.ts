@@ -9,6 +9,7 @@ interface NavItem {
   icon: string;
   label: string;
   route: string;
+  adminOnly?: boolean;
 }
 
 @Component({
@@ -40,6 +41,7 @@ interface NavItem {
 
         <nav class="nav-menu">
           @for (item of navItems; track item.route) {
+            @if (!item.adminOnly || authService.isAdmin()) {
             <a 
               class="nav-item" 
               [routerLink]="item.route" 
@@ -50,6 +52,7 @@ interface NavItem {
                 <span>{{ item.label }}</span>
               }
             </a>
+            }
           }
         </nav>
 
@@ -298,7 +301,9 @@ export class LayoutComponent {
     { icon: 'category', label: 'Categorías', route: '/categorias' },
     { icon: 'local_shipping', label: 'Proveedores', route: '/proveedores' },
     { icon: 'attach_money', label: 'Ventas', route: '/ventas' },
-    { icon: 'point_of_sale', label: 'Nueva Venta', route: '/pos' }
+    { icon: 'point_of_sale', label: 'Nueva Venta', route: '/pos' },
+    { icon: 'manage_accounts', label: 'Usuarios', route: '/usuarios', adminOnly: true },
+    { icon: 'lock', label: 'Mi contraseña', route: '/usuarios/cambiar-password' }
   ];
 
   constructor(public authService: AuthService) {}

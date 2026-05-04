@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "node --watch app.js",
+    "seed": "node database/seed.js",
     "init-db": "node database/init.js",
     "test": "jest --coverage --detectOpenHandles --forceExit",
     "test:watch": "jest --watch"
