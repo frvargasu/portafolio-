@@ -25,8 +25,26 @@ interface NavItem {
   ],
   template: `
     <div class="app-container">
+
+      <!-- Mobile top bar -->
+      <header class="mobile-topbar">
+        <button class="hamburger-btn" (click)="toggleMobileMenu()">
+          <mat-icon>{{ mobileMenuOpen() ? 'close' : 'menu' }}</mat-icon>
+        </button>
+        <div class="mobile-logo">
+          <mat-icon>settings</mat-icon>
+          <span>Inventario</span>
+        </div>
+        <div class="mobile-avatar">
+          {{ authService.currentUser()?.nombre?.charAt(0) || 'A' }}
+        </div>
+      </header>
+
+      <!-- Overlay for mobile -->
+      <div class="mobile-overlay" [class.visible]="mobileMenuOpen()" (click)="closeMobileMenu()"></div>
+
       <!-- Sidebar -->
-      <aside class="sidebar" [class.collapsed]="!sidenavOpened()">
+      <aside class="sidebar" [class.collapsed]="!sidenavOpened()" [class.mobile-open]="mobileMenuOpen()">
         <div class="sidebar-header">
           <div class="logo">
             <mat-icon>settings</mat-icon>
@@ -46,7 +64,8 @@ interface NavItem {
               class="nav-item" 
               [routerLink]="item.route" 
               routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }">
+              [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+              (click)="closeMobileMenu()">
               <mat-icon>{{ item.icon }}</mat-icon>
               @if (sidenavOpened()) {
                 <span>{{ item.label }}</span>
@@ -290,10 +309,134 @@ interface NavItem {
         padding: 10px;
       }
     }
+
+    /* ── Mobile top bar ── */
+    .mobile-topbar {
+      display: none;
+    }
+
+    /* ── Mobile overlay ── */
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      &.visible {
+        display: block;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        flex-direction: column;
+      }
+
+      /* Top bar */
+      .mobile-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        height: 56px;
+        background: linear-gradient(90deg, #1e1b4b 0%, #312e81 100%);
+        position: sticky;
+        top: 0;
+        z-index: 998;
+        flex-shrink: 0;
+      }
+
+      .hamburger-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 8px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: white;
+        transition: background 0.2s;
+        &:hover { background: rgba(255, 255, 255, 0.2); }
+        mat-icon { font-size: 22px; width: 22px; height: 22px; }
+      }
+
+      .mobile-logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+        mat-icon { font-size: 22px; width: 22px; height: 22px; }
+      }
+
+      .mobile-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      /* Sidebar as overlay drawer */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 260px !important;
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+
+        &.mobile-open {
+          transform: translateX(0);
+        }
+
+        /* Always show labels inside mobile drawer */
+        .nav-item {
+          justify-content: flex-start !important;
+          padding: 14px 16px !important;
+          gap: 12px;
+          span { display: inline !important; }
+        }
+
+        .user-info { justify-content: flex-start !important; }
+
+        .logout-btn {
+          padding: 12px !important;
+          justify-content: center;
+          gap: 8px;
+          span { display: inline !important; }
+        }
+
+        /* Keep toggle btn hidden on mobile */
+        .toggle-btn { display: none; }
+
+        /* Always show logo text */
+        .logo-text { display: inline !important; }
+      }
+
+      .main-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        height: calc(100vh - 56px);
+      }
+    }
   `]
 })
 export class LayoutComponent {
   sidenavOpened = signal(true);
+  mobileMenuOpen = signal(false);
 
   navItems: NavItem[] = [
     { icon: 'dashboard', label: 'Dashboard', route: '/dashboard' },
@@ -310,6 +453,14 @@ export class LayoutComponent {
 
   toggleSidenav(): void {
     this.sidenavOpened.set(!this.sidenavOpened());
+  }
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen.set(!this.mobileMenuOpen());
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen.set(false);
   }
 
   logout(): void {

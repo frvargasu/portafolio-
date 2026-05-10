@@ -744,6 +744,40 @@ import { Producto, ProductoCarrito, Categoria, CreateVentaRequest } from '../../
         max-height: 50vh;
       }
     }
+
+    @media (max-width: 600px) {
+      .pos-container {
+        gap: 16px;
+      }
+
+      .page-title {
+        font-size: 20px;
+        margin-bottom: 16px;
+      }
+
+      .section-title {
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
+
+      .productos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 10px;
+        max-height: 45vh;
+      }
+
+      .carrito-header {
+        padding: 14px 16px;
+      }
+
+      .pago-actions {
+        flex-direction: column;
+
+        button {
+          width: 100%;
+        }
+      }
+    }
   `]
 })
 export class PosComponent implements OnInit {

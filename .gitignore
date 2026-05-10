@@ -47,3 +47,5 @@ coverage/
 # Temp files
 *.tmp
 *.temp
+.vercel
+.env*.local
